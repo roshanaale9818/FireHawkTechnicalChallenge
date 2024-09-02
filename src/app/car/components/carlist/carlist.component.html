@@ -1,36 +1,64 @@
 <div class="container mt-4">
   <!-- Search and Filter -->
+
   <div class="row mb-3">
     <div class="col-md-6">
       <input
         type="text"
         class="form-control"
         placeholder="Search cars"
-        [(ngModel)]="searchQuery"
+        [(ngModel)]="searchedCarName"
         (ngModelChange)="search()"
       />
     </div>
-    <div class="col-md-6 text-right">
-      <button class="btn btn-primary" (click)="addCar()">Add Car</button>
+    <div class="col-md-4 text-left">
+      <button class="btn btn-primary mr-2">Search Car</button>
+      <app-car-form></app-car-form>
     </div>
   </div>
 
+  <!-- Toggle Advanced Filters -->
+  <div class="row mb-3">
+    <div class="col-md-12 text-right">
+      <button class="btn btn-secondary" (click)="toggleAdvancedFilters()">
+        {{ showAdvancedFilters ? "Hide" : "Show" }} Advanced Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Advanced Filters -->
+  <div *ngIf="showAdvancedFilters">
+    <app-car-filter (filterChanged)="onFilterChanged($event)"></app-car-filter>
+  </div>
+
   <!-- Car Table -->
-  <table class="table table-striped table-bordered">
+  <table class="table table-striped table-bordered mt-4">
     <thead>
       <tr>
-        <th>Make</th>
-        <th>Model</th>
-        <th>Year</th>
+        <th>Name</th>
+        <th>MPG</th>
+        <th>Cylinders</th>
+        <th>Displacement</th>
+        <th>Horsepower</th>
+        <th>Weight</th>
+        <th>Acceleration</th>
+        <th>Model Year</th>
+        <th>Origin</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <ng-container *ngIf="cars && cars.length > 0">
         <tr *ngFor="let car of cars">
-          <td>{{ car.make }}</td>
-          <td>{{ car.model }}</td>
-          <td>{{ car.year }}</td>
+          <td>{{ car.name }}</td>
+          <td>{{ car.mpg }}</td>
+          <td>{{ car.cylinders }}</td>
+          <td>{{ car.displacement }}</td>
+          <td>{{ car.horsepower }}</td>
+          <td>{{ car.weight }}</td>
+          <td>{{ car.acceleration }}</td>
+          <td>{{ car.modelYear }}</td>
+          <td>{{ car.origin }}</td>
           <td>
             <button class="btn btn-warning btn-sm" (click)="editCar(car.id)">
               Edit
@@ -41,9 +69,9 @@
           </td>
         </tr>
       </ng-container>
-      <ng-container *ngIf="!cars || cars.length == 0">
+      <ng-container *ngIf="!cars || cars.length === 0">
         <tr class="alert alert-info" role="alert">
-          <td colspan="4" class="text-center">No cars found.</td>
+          <td colspan="10" class="text-center">No cars found.</td>
         </tr>
       </ng-container>
     </tbody>

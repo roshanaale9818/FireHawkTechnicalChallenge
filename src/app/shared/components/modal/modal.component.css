@@ -21,7 +21,7 @@
 .modal-dialog {
   z-index: 1050; /* Ensure it's above the backdrop */
   position: relative;
-  top: 20%;
+  top: 10%;
   transform: translateY(-30px); /* Initial position for slide effect */
   opacity: 0; /* Initial opacity for fade effect */
   transition: transform 0.3s ease, opacity 0.3s ease; /* Slide and fade transition */

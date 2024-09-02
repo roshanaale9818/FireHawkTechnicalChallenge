@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CarService } from '../../services/car.service';
+import { ModalService } from '../../../core/services/modal.service';
 
 @Component({
   selector: 'app-carlist',
@@ -8,15 +9,21 @@ import { CarService } from '../../services/car.service';
 })
 export class CarlistComponent {
   cars: any[] = [];
-  searchQuery: string = '';
+  searchedCarName: string = '';
   filter: any = {};
+  public showAdvancedFilters: boolean = false;
 
-  constructor(private carService: CarService) {}
+  constructor(
+    private carService: CarService,
+    private modalService: ModalService
+  ) {}
 
   ngOnInit(): void {
     this.loadCars();
   }
-
+  toggleAdvancedFilters() {
+    this.showAdvancedFilters = !this.showAdvancedFilters;
+  }
   loadCars(): void {
     // this.carService.getCars().subscribe(cars => {
     //   this.cars = cars;
@@ -29,7 +36,7 @@ export class CarlistComponent {
   }
 
   addCar(): void {
-    // Implement add car logic, e.g., open a modal or navigate to a form page
+    this.modalService.showModal('');
   }
 
   editCar(id: string): void {
@@ -40,5 +47,8 @@ export class CarlistComponent {
     // this.carService.deleteCar(id).then(() => {
     //   this.loadCars(); // Reload the list after deletion
     // });
+  }
+  onFilterChanged(event: any) {
+    console.log(event);
   }
 }

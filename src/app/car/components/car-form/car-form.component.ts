@@ -1,13 +1,23 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ModalService } from '../../../core/services/modal.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModalComponent } from '../../../shared/components/modal/modal.component';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
+  selector: 'app-car-form',
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ModalComponent],
+  templateUrl: './car-form.component.html',
+  styleUrl: './car-form.component.css',
 })
-export class HomeComponent {
+export class CarFormComponent {
   addCarForm: FormGroup;
   cylinders: number[] = [4, 6, 8];
   modelYears: number[] = [2020, 2021, 2022, 2023, 2024];
