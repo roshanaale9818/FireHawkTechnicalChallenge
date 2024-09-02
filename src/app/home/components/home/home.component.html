@@ -1,1 +1,51 @@
-<p>home works!</p>
+<section
+  class="home_section d-flex justify-content-center align-items-center h-80vh"
+  id="home-section"
+>
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6 text-center">
+        <h1 class="display-4 mb-4">Welcome to Car Database System</h1>
+        <div
+          class="card mx-auto my-4 shadow-lg"
+          style="
+            width: 100%;
+            max-width: 24rem;
+            border-radius: 10px;
+            overflow: hidden;
+          "
+        >
+          <div class="card-body">
+            <h5 class="card-title">Manage Your Car Collection</h5>
+            <p class="card-text lead pt-2">
+              Easily store and manage your car collection. Use filters, search,
+              and sort features to quickly find the information you need.
+              Remember to save your data or download it as a CSV file for
+              backup.
+            </p>
+            <button
+              class="btn btn-primary me-2"
+              type="button"
+              (click)="onShowModal()"
+            >
+              Add a New Car
+            </button>
+            <a [routerLink]="'/cars'" class="btn btn-outline-secondary"
+              >View Cars</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-modal title="Add New Car">
+  <p>This is the content inside the modal. Form goes here</p>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary">Save</button>
+    <button type="button" class="btn btn-danger" (click)="onCloseDialog()">
+      Close
+    </button>
+  </div>
+</app-modal>

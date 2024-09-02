@@ -1,0 +1,51 @@
+<div class="container mt-4">
+  <!-- Search and Filter -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search cars"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="search()"
+      />
+    </div>
+    <div class="col-md-6 text-right">
+      <button class="btn btn-primary" (click)="addCar()">Add Car</button>
+    </div>
+  </div>
+
+  <!-- Car Table -->
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Year</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngIf="cars && cars.length > 0">
+        <tr *ngFor="let car of cars">
+          <td>{{ car.make }}</td>
+          <td>{{ car.model }}</td>
+          <td>{{ car.year }}</td>
+          <td>
+            <button class="btn btn-warning btn-sm" (click)="editCar(car.id)">
+              Edit
+            </button>
+            <button class="btn btn-danger btn-sm" (click)="deleteCar(car.id)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </ng-container>
+      <ng-container *ngIf="!cars || cars.length == 0">
+        <tr class="alert alert-info" role="alert">
+          <td colspan="4" class="text-center">No cars found.</td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
