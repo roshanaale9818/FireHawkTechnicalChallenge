@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ModalService } from '../../../core/services/modal.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CarService } from '../../../car/services/car.service';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,11 @@ export class HomeComponent {
   modelYears: number[] = [2020, 2021, 2022, 2023, 2024];
   origins: string[] = ['USA', 'Europe', 'Asia'];
 
-  constructor(private fb: FormBuilder, private modalService: ModalService) {
+  constructor(
+    private fb: FormBuilder,
+    private modalService: ModalService,
+    private carService: CarService
+  ) {
     this.addCarForm = this.fb.group({
       name: ['', Validators.required],
       mpg: [null, [Validators.required, Validators.min(0)]],
@@ -36,6 +41,9 @@ export class HomeComponent {
       const newCar = this.addCarForm.value;
       console.log('New Car Data:', newCar);
       this.onCloseDialog();
+      this.carService.addCar(newCar).subscribe((data: any) => {
+        console.log(data);
+      });
     }
   }
   onShowModal() {
