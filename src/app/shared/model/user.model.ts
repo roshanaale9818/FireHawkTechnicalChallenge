@@ -7,3 +7,9 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface CustomResponse {
+  status: string;
+  data: any;
+  message: string;
+}

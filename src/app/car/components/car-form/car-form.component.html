@@ -1,6 +1,12 @@
-<button class="btn btn-primary" (click)="onShowModal()">Add New Car</button>
+<button
+  class="btn btn-primary"
+  [ngClass]="data.id ? 'btn btn-sm mr-1' : ''"
+  (click)="onShowModal()"
+>
+  {{ btnLabel }}
+</button>
 
-<app-modal title="Add New Car">
+<app-modal title="Car Form">
   <form [formGroup]="addCarForm" (ngSubmit)="onSubmit()">
     <div class="form-group row">
       <label for="name" class="col-sm-4 col-form-label"

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ModalService } from '../../../core/services/modal.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CarService } from '../../../car/services/car.service';
+import { CustomResponse } from '../../../shared/model/user.model';
 
 @Component({
   selector: 'app-home',
@@ -41,8 +42,12 @@ export class HomeComponent {
       const newCar = this.addCarForm.value;
       console.log('New Car Data:', newCar);
       this.onCloseDialog();
-      this.carService.addCar(newCar).subscribe((data: any) => {
-        console.log(data);
+      this.carService.addCar(newCar).subscribe((data: CustomResponse) => {
+        if (data.status == 'ok') {
+          alert('Car added successfull.');
+        } else {
+          alert('Saving failed. Please try again later.');
+        }
       });
     }
   }

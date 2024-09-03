@@ -23,3 +23,6 @@ body {
 .is-invalid {
   border-color: #dc3545;
 }
+.mr-1 {
+  margin-right: 10px;
+}
