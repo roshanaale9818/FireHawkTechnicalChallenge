@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { User } from '../../model/user.model';
 import { CarService } from '../../../car/services/car.service';
 import { HttpClient } from '@angular/common/http';
+import { environments } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-navbar',
@@ -22,10 +23,11 @@ export class NavbarComponent {
     createdAt: new Date('2024-01-01T10:00:00Z'),
     updatedAt: new Date('2024-09-01T10:00:00Z'),
   };
+  apiUrl: string = environments.apiUrl;
   onDownload() {
     try {
       this.http
-        .get('http://localhost:8080/download-csv', {
+        .get(`${this.apiUrl}/download-csv`, {
           responseType: 'blob', // Important for file downloads
         })
         .subscribe((response: Blob) => {
