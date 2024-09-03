@@ -23,19 +23,23 @@ export class NavbarComponent {
     updatedAt: new Date('2024-09-01T10:00:00Z'),
   };
   onDownload() {
-    console.log('downloading');
-    this.http
-      .get('http://localhost:8080/download-csv', {
-        responseType: 'blob', // Important for file downloads
-      })
-      .subscribe((response: Blob) => {
-        const url = window.URL.createObjectURL(response);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'cars.csv';
-        link.click();
-        window.URL.revokeObjectURL(url);
-      });
+    try {
+      this.http
+        .get('http://localhost:8080/download-csv', {
+          responseType: 'blob', // Important for file downloads
+        })
+        .subscribe((response: Blob) => {
+          const url = window.URL.createObjectURL(response);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'cars.csv';
+          link.click();
+          window.URL.revokeObjectURL(url);
+          alert('Download successfull.');
+        });
+    } catch (er) {
+      alert('Something went wrong.');
+    }
   }
   constructor(private http: HttpClient) {}
 }

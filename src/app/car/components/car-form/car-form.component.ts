@@ -58,15 +58,12 @@ export class CarFormComponent {
       return;
     } else {
       const newCar = this.addCarForm.value;
-      console.log('New Car Data:', newCar);
       this.onCloseDialog();
     }
   }
   onShowModal() {
     this.modalService.showModal('');
-    console.log(this.modalService.showModal('sdsdsdsdds'));
     if (this.data && this.data.id) {
-      console.log('settomh fpr, ', this.data);
       // Set the form values with the data from the Car object
       this.addCarForm.patchValue({
         id: this.data.id,

@@ -64,7 +64,7 @@ export class CarlistComponent {
       ...filter,
       carName: carName ? JSON.parse(carName) : '',
     };
-    console.log(searchParams);
+
     this.carService
       .getCarList(searchParams)
       .subscribe((res: CustomResponse) => {
@@ -90,6 +90,7 @@ export class CarlistComponent {
   }
 
   editCar(car: Car): void {
+    console.log('ABOUT TO PATCH', car);
     this.addCarForm.patchValue({
       id: car.id,
       name: car.name,
@@ -108,7 +109,6 @@ export class CarlistComponent {
   deleteCar(car: Car): void {
     if (confirm(`Are you sure you want to delete ${car.name}?`)) {
       this.carService.deleteCar(car).subscribe((res: CustomResponse) => {
-        console.log(res);
         if (res.status == 'ok') {
           this.loadCars();
           alert('Car deleted successfull.');
@@ -117,7 +117,6 @@ export class CarlistComponent {
     }
   }
   onFilterChanged(event: any) {
-    console.log(event);
     this.loadCars();
   }
   onCloseDialog() {
@@ -125,12 +124,11 @@ export class CarlistComponent {
   }
 
   onSubmit(): void {
-    console.log(this.addCarForm.value);
     if (!this.addCarForm.valid) {
       return;
     } else {
       const newCar = this.addCarForm.value;
-      console.log('Car new', newCar);
+      console.log(newCar);
       if (newCar.id) {
         this.carService.updateCar(newCar).subscribe((res: CustomResponse) => {
           if (res.status == 'ok') {
@@ -160,7 +158,6 @@ export class CarlistComponent {
   selectedFile: any = null;
   onFileChange(event: any): void {
     const file = event.target.files[0] as File | null;
-    console.log(file);
     if (file) {
       this.selectedFileName = file.name;
       this.selectedFile = file;
@@ -169,13 +166,19 @@ export class CarlistComponent {
   selectCSV() {
     this.fileInput?.nativeElement.click();
   }
+  isUploading: boolean = false;
   onUploadCSV() {
+    if (this.isUploading) return;
+    this.isUploading = true;
     this.carService
       .uploadCsv(this.selectedFile)
       .subscribe((res: CustomResponse) => {
         if (res.status == 'ok') {
           alert('Data uploaded successfull.');
           this.loadCars();
+          this.selectedFile = null;
+          this.selectedFileName = '';
+          this.isUploading = false;
         }
       });
   }

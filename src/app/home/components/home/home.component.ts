@@ -40,7 +40,6 @@ export class HomeComponent {
       return;
     } else {
       const newCar = this.addCarForm.value;
-      console.log('New Car Data:', newCar);
       this.onCloseDialog();
       this.carService.addCar(newCar).subscribe((data: CustomResponse) => {
         if (data.status == 'ok') {
@@ -52,8 +51,7 @@ export class HomeComponent {
     }
   }
   onShowModal() {
-    this.modalService.showModal('');
-    console.log(this.modalService.showModal('sdsdsdsdds'));
+    this.modalService.showModal('sss');
   }
   onCloseDialog() {
     this.modalService.hideModal();
