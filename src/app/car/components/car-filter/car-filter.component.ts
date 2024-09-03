@@ -8,9 +8,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class CarFilterComponent {
   filterForm: FormGroup;
-  cylinders: number[] = [4, 6, 8];
+  cylinders: number[] = [0, 4, 6, 8];
   modelYears: number[] = [2020, 2021, 2022, 2023, 2024];
-  origins: string[] = ['USA', 'Europe', 'Asia'];
+  origins: string[] = ['usa', 'europe', 'asia', 'japan'];
   private readonly storageKey = 'searchFilters';
   @Output() filterChanged = new EventEmitter<any>();
   ngOnInit(): void {
@@ -22,11 +22,7 @@ export class CarFilterComponent {
 
   constructor(private fb: FormBuilder) {
     this.filterForm = this.fb.group({
-      mpgMin: [10],
-      mpgMax: [30],
-      selectedCylinder: [4],
-      horsepowerMin: [30],
-      horsepowerMax: [300],
+      selectedCylinder: [null],
       selectedModelYear: [null],
       selectedOrigin: [null],
     });
@@ -36,7 +32,6 @@ export class CarFilterComponent {
     const filters = this.filterForm.value;
     localStorage.setItem(this.storageKey, JSON.stringify(filters));
     this.filterChanged.emit(filters);
-    console.log(filters);
   }
 
   loadFilters(): void {

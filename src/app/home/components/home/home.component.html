@@ -312,7 +312,7 @@
         >
           <option value="">Select Origin</option>
           <option *ngFor="let origin of origins" [value]="origin">
-            {{ origin }}
+            {{ origin | capitalize }}
           </option>
         </select>
         <div

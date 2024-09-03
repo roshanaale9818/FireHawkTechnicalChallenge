@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CarService } from '../../services/car.service';
 import { ModalService } from '../../../core/services/modal.service';
 import { Car } from '../../../shared/model/car.model';
@@ -18,7 +18,8 @@ export class CarlistComponent {
   addCarForm: FormGroup;
   cylinders: number[] = [4, 6, 8];
   modelYears: number[] = [2020, 2021, 2022, 2023, 2024];
-  origins: string[] = ['USA', 'Europe', 'Asia'];
+  origins: string[] = ['usa', 'europe', 'asia', 'japan'];
+  @ViewChild('fileInput') fileInput: ElementRef | undefined;
   constructor(
     private carService: CarService,
     private modalService: ModalService,
@@ -48,19 +49,37 @@ export class CarlistComponent {
   toggleAdvancedFilters() {
     this.showAdvancedFilters = !this.showAdvancedFilters;
   }
+  isLoading: boolean = true;
   loadCars(): void {
-    this.carService.getCarList('').subscribe((res: CustomResponse) => {
-      if (res.status == 'ok') {
-        this.cars = res.data;
-      } else {
-        this.cars = [];
-      }
-    });
+    this.isLoading = true;
+    const savedFilters = localStorage.getItem('searchFilters');
+    let searchParams;
+    let filter;
+    if (savedFilters) {
+      filter = JSON.parse(savedFilters);
+    }
+    const carName = localStorage.getItem('carName');
+    this.searchedCarName = carName ? JSON.parse(carName) : '';
+    searchParams = {
+      ...filter,
+      carName: carName ? JSON.parse(carName) : '',
+    };
+    console.log(searchParams);
+    this.carService
+      .getCarList(searchParams)
+      .subscribe((res: CustomResponse) => {
+        if (res.status == 'ok') {
+          this.cars = res.data;
+        } else {
+          this.cars = [];
+        }
+
+        this.isLoading = false;
+      });
   }
 
   search(): void {
-    // Implement search logic here
-    // For example: this.cars = this.cars.filter(car => car.name.includes(this.searchQuery));
+    localStorage.setItem('carName', JSON.stringify(this.searchedCarName));
   }
 
   showDialog(): void {
@@ -99,6 +118,7 @@ export class CarlistComponent {
   }
   onFilterChanged(event: any) {
     console.log(event);
+    this.loadCars();
   }
   onCloseDialog() {
     this.modalService.hideModal();
@@ -135,5 +155,28 @@ export class CarlistComponent {
 
       // this.onCloseDialog();
     }
+  }
+  selectedFileName: string = '';
+  selectedFile: any = null;
+  onFileChange(event: any): void {
+    const file = event.target.files[0] as File | null;
+    console.log(file);
+    if (file) {
+      this.selectedFileName = file.name;
+      this.selectedFile = file;
+    }
+  }
+  selectCSV() {
+    this.fileInput?.nativeElement.click();
+  }
+  onUploadCSV() {
+    this.carService
+      .uploadCsv(this.selectedFile)
+      .subscribe((res: CustomResponse) => {
+        if (res.status == 'ok') {
+          alert('Data uploaded successfull.');
+          this.loadCars();
+        }
+      });
   }
 }

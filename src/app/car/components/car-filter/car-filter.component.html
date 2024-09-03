@@ -1,10 +1,10 @@
-<div class="container mt-4">
-  <h3>Filter Cars</h3>
+<div class="container mt-4 p-4 border rounded bg-light">
+  <h3 class="mb-4 text-primary">Filter Cars</h3>
 
   <form [formGroup]="filterForm" (ngSubmit)="applyFilters()">
     <!-- MPG Filter -->
     <div class="form-group row">
-      <label for="mpgMin" class="col-sm-2 col-form-label">MPG (Min)</label>
+      <!-- <label for="mpgMin" class="col-sm-2 col-form-label">MPG (Min)</label>
       <div class="col-sm-4">
         <input
           type="number"
@@ -12,8 +12,8 @@
           class="form-control"
           formControlName="mpgMin"
         />
-      </div>
-      <label for="mpgMax" class="col-sm-2 col-form-label">MPG (Max)</label>
+      </div> -->
+      <!-- <label for="mpgMax" class="col-sm-2 col-form-label">MPG (Max)</label>
       <div class="col-sm-4">
         <input
           type="number"
@@ -21,7 +21,7 @@
           class="form-control"
           formControlName="mpgMax"
         />
-      </div>
+      </div> -->
     </div>
 
     <!-- Cylinders Filter -->
@@ -34,18 +34,18 @@
             class="form-check-input"
             name="selectedCylinder"
             [id]="'cylinder-' + cylinder"
-            [value]="cylinder"
+            [value]="cylinder === 0 ? null : cylinder"
             formControlName="selectedCylinder"
           />
           <label class="form-check-label" [for]="'cylinder-' + cylinder">
-            {{ cylinder }} Cylinders
+            {{ cylinder === 0 ? "Any" : cylinder }} Cylinders
           </label>
         </div>
       </div>
     </div>
 
     <!-- Horsepower Filter -->
-    <div class="form-group row">
+    <!-- <div class="form-group row">
       <label for="horsepowerMin" class="col-sm-2 col-form-label"
         >Horsepower (Min)</label
       >
@@ -68,7 +68,7 @@
           formControlName="horsepowerMax"
         />
       </div>
-    </div>
+    </div> -->
 
     <!-- Model Year Filter -->
     <div class="form-group row">
@@ -98,7 +98,7 @@
         >
           <option [ngValue]="null">Any</option>
           <option *ngFor="let origin of origins" [value]="origin">
-            {{ origin }}
+            {{ origin | capitalize }}
           </option>
         </select>
       </div>
@@ -107,7 +107,9 @@
     <!-- Submit Button -->
     <div class="form-group row">
       <div class="col-sm-12 text-right">
-        <button type="submit" class="btn btn-primary">Apply Filters</button>
+        <button type="submit" class="btn btn-success btn-sm">
+          Apply Filters
+        </button>
       </div>
     </div>
   </form>

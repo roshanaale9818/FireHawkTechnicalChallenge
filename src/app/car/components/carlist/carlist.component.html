@@ -2,34 +2,52 @@
   <!-- Search and Filter -->
 
   <div class="row mb-3">
-    <div class="col-md-6 mb-2">
+    <div class="col-md-4 mb-2">
       <input
         type="text"
         class="form-control"
-        placeholder="Search cars"
+        placeholder="Search cars Eg. Toyota"
         [(ngModel)]="searchedCarName"
         (ngModelChange)="search()"
       />
     </div>
-    <div class="col-md-4 text-left">
-      <button class="btn btn-primary mr-2">Search Car</button>
+    <div class="col-md-8 text-left">
       <button class="btn btn-primary mr-2" (click)="addNewCar()">
         Add New Car
       </button>
+      <input
+        type="file"
+        accept=".csv"
+        (change)="onFileChange($event)"
+        hidden
+        #fileInput
+      />
+      <button class="btn btn-info text-white mr-2" (click)="selectCSV()">
+        Select CSV
+      </button>
+      <ng-container *ngIf="selectedFileName">
+        {{ selectedFileName }}
+        <button
+          class="btn btn-success btn-sm text-white mr-2"
+          (click)="onUploadCSV()"
+        >
+          Upload
+        </button>
+      </ng-container>
     </div>
   </div>
 
   <!-- Toggle Advanced Filters -->
-  <div class="row mb-3">
+  <!-- <div class="row mb-3">
     <div class="col-md-12 text-right">
       <button class="btn btn-secondary" (click)="toggleAdvancedFilters()">
         {{ showAdvancedFilters ? "Hide" : "Show" }} Advanced Filters
       </button>
     </div>
-  </div>
+  </div> -->
 
   <!-- Advanced Filters -->
-  <div *ngIf="showAdvancedFilters">
+  <div>
     <app-car-filter (filterChanged)="onFilterChanged($event)"></app-car-filter>
   </div>
 
@@ -51,36 +69,43 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="cars && cars.length > 0">
-          <tr *ngFor="let car of cars; trackBy: trackByCarId">
-            <td>{{ car.name }}</td>
-            <td>{{ car.mpg }}</td>
-            <td>{{ car.cylinders }}</td>
-            <td>{{ car.displacement }}</td>
-            <td>{{ car.horsepower }}</td>
-            <td>{{ car.weight }}</td>
-            <td>{{ car.acceleration }}</td>
-            <td>{{ car.modelYear }}</td>
-            <td>{{ car.origin }}</td>
-            <td>
-              <button
-                class="btn btn-warning btn-sm mr-2"
-                (click)="editCar(car)"
-              >
-                Edit
-              </button>
-
-              <!-- <app-car-form btnLabel="Edit Car" [data]="car"></app-car-form> -->
-              <button class="btn btn-danger btn-sm" (click)="deleteCar(car)">
-                Delete
-              </button>
-            </td>
-          </tr>
+        <ng-container *ngIf="isLoading">
+          <div class="w-100">
+            <p class="text-center">Loading....</p>
+          </div>
         </ng-container>
-        <ng-container *ngIf="!cars || cars.length === 0">
-          <tr class="alert alert-info" role="alert">
-            <td colspan="10" class="text-center">No cars found.</td>
-          </tr>
+
+        <ng-container *ngIf="!isLoading">
+          <ng-container *ngIf="cars && cars.length > 0">
+            <tr *ngFor="let car of cars; trackBy: trackByCarId">
+              <td>{{ car.name }}</td>
+              <td>{{ car.mpg }}</td>
+              <td>{{ car.cylinders }}</td>
+              <td>{{ car.displacement }}</td>
+              <td>{{ car.horsepower }}</td>
+              <td>{{ car.weight }}</td>
+              <td>{{ car.acceleration }}</td>
+              <td>{{ car.modelYear }}</td>
+              <td>{{ car.origin | capitalize }}</td>
+              <td>
+                <button
+                  class="btn btn-warning btn-sm mr-2"
+                  (click)="editCar(car)"
+                >
+                  Edit
+                </button>
+
+                <button class="btn btn-danger btn-sm" (click)="deleteCar(car)">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="!cars || cars.length === 0">
+            <tr class="alert alert-info" role="alert">
+              <td colspan="10" class="text-center">No cars found.</td>
+            </tr>
+          </ng-container>
         </ng-container>
       </tbody>
     </table>
@@ -359,7 +384,7 @@
         >
           <option value="">Select Origin</option>
           <option *ngFor="let origin of origins" [value]="origin">
-            {{ origin }}
+            {{ origin | capitalize }}
           </option>
         </select>
         <div

@@ -13,7 +13,7 @@ export class HomeComponent {
   addCarForm: FormGroup;
   cylinders: number[] = [4, 6, 8];
   modelYears: number[] = [2020, 2021, 2022, 2023, 2024];
-  origins: string[] = ['USA', 'Europe', 'Asia'];
+  origins: string[] = ['usa', 'europe', 'asia', 'japan'];
 
   constructor(
     private fb: FormBuilder,
