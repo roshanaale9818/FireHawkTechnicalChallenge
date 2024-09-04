@@ -41,5 +41,4 @@ testem.log
 .DS_Store
 Thumbs.db
 /environments/
-enironment.prod.ts
-src/app/environments/environment.prod.ts
+Dockerfile
