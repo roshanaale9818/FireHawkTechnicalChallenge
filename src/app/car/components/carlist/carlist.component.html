@@ -2,15 +2,6 @@
   <!-- Search and Filter -->
 
   <div class="row mb-3">
-    <div class="col-md-4 mb-2">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Search cars Eg. Toyota"
-        [(ngModel)]="searchedCarName"
-        (ngModelChange)="search()"
-      />
-    </div>
     <div class="col-md-8 text-left">
       <button class="btn btn-primary mr-2" (click)="addNewCar()">
         Add New Car
@@ -48,6 +39,15 @@
 
   <!-- Advanced Filters -->
   <div>
+    <div class="col-md-4 mb-2">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search cars Eg. Toyota"
+        [(ngModel)]="searchedCarName"
+        (ngModelChange)="search()"
+      />
+    </div>
     <app-car-filter (filterChanged)="onFilterChanged($event)"></app-car-filter>
   </div>
 

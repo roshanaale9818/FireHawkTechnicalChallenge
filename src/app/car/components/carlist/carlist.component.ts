@@ -17,7 +17,7 @@ export class CarlistComponent {
   public showAdvancedFilters: boolean = false;
   addCarForm: FormGroup;
   cylinders: number[] = [4, 6, 8];
-  modelYears: number[] = [2020, 2021, 2022, 2023, 2024];
+  modelYears: number[] = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
   origins: string[] = ['usa', 'europe', 'asia', 'japan'];
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
   constructor(
