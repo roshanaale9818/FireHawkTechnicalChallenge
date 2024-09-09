@@ -159,6 +159,12 @@ export class CarlistComponent {
   onFileChange(event: any): void {
     const file = event.target.files[0] as File | null;
     if (file) {
+      if (file.type !== 'text/csv') {
+        alert('Invalid file format.');
+        this.selectedFile = null;
+        this.selectedFileName = '';
+        return;
+      }
       this.selectedFileName = file.name;
       this.selectedFile = file;
     }
