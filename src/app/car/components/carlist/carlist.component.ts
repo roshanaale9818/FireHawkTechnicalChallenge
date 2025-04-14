@@ -73,9 +73,8 @@ export class CarlistComponent {
     };
     this.loadingService.show('Loading data...');
 
-    this.carService
-      .getCarList(searchParams)
-      .subscribe((res: CustomResponse) => {
+    this.carService.getCarList(searchParams).subscribe(
+      (res: CustomResponse) => {
         if (res.status == 'ok') {
           this.loadingService.hide();
           this.cars = res.data;
@@ -84,7 +83,13 @@ export class CarlistComponent {
         }
 
         this.isLoading = false;
-      });
+      },
+      (err) => {
+        console.log(err);
+        this.loadingService.hide();
+        this.toast.error(err.error.message);
+      }
+    );
   }
 
   search(): void {
@@ -116,12 +121,19 @@ export class CarlistComponent {
 
   deleteCar(car: Car): void {
     if (confirm(`Are you sure you want to delete ${car.name}?`)) {
-      this.carService.deleteCar(car).subscribe((res: CustomResponse) => {
-        if (res.status == 'ok') {
-          this.loadCars();
-          this.toast.success('Car deleted successfull.');
+      this.carService.deleteCar(car).subscribe(
+        (res: CustomResponse) => {
+          if (res.status == 'ok') {
+            this.loadCars();
+            this.toast.success('Car deleted successfull.');
+          }
+        },
+        (err) => {
+          console.log(err);
+          this.loadingService.hide();
+          this.toast.error(err.error.message);
         }
-      });
+      );
     }
   }
   onFilterChanged(event: any) {
@@ -138,27 +150,41 @@ export class CarlistComponent {
       this.isLoadingForm = true;
       const newCar = this.addCarForm.value;
       if (newCar.id) {
-        this.carService.updateCar(newCar).subscribe((res: CustomResponse) => {
-          this.isLoadingForm = false;
-          if (res.status == 'ok') {
-            this.onCloseDialog();
-            this.toast.success('Data updated successfull.');
-            this.loadCars();
-          } else {
-            this.toast.error('Data failed to save. Please try again later.');
+        this.carService.updateCar(newCar).subscribe(
+          (res: CustomResponse) => {
+            this.isLoadingForm = false;
+            if (res.status == 'ok') {
+              this.onCloseDialog();
+              this.toast.success('Data updated successfull.');
+              this.loadCars();
+            } else {
+              this.toast.error('Data failed to save. Please try again later.');
+            }
+          },
+          (err) => {
+            console.log(err);
+            this.loadingService.hide();
+            this.toast.error(err.error.message);
           }
-        });
+        );
       } else {
-        this.carService.addCar(newCar).subscribe((res: CustomResponse) => {
-          this.isLoadingForm = false;
-          if (res.status == 'ok') {
-            this.onCloseDialog();
-            this.toast.success('Data saved successfull.');
-            this.loadCars();
-          } else {
-            this.toast.error('Data failed to save. Please try again later.');
+        this.carService.addCar(newCar).subscribe(
+          (res: CustomResponse) => {
+            this.isLoadingForm = false;
+            if (res.status == 'ok') {
+              this.onCloseDialog();
+              this.toast.success('Data saved successfull.');
+              this.loadCars();
+            } else {
+              this.toast.error('Data failed to save. Please try again later.');
+            }
+          },
+          (err) => {
+            console.log(err);
+            this.loadingService.hide();
+            this.toast.error(err.error.message);
           }
-        });
+        );
       }
 
       // this.onCloseDialog();
@@ -187,9 +213,8 @@ export class CarlistComponent {
     if (this.isUploading) return;
     this.isUploading = true;
     this.loadingService.show('Uploading... This may take few moments');
-    this.carService
-      .uploadCsv(this.selectedFile)
-      .subscribe((res: CustomResponse) => {
+    this.carService.uploadCsv(this.selectedFile).subscribe(
+      (res: CustomResponse) => {
         if (res.status == 'ok') {
           this.loadingService.hide();
           this.toast.success('Data uploaded successfull.');
@@ -198,22 +223,35 @@ export class CarlistComponent {
           this.selectedFileName = '';
           this.isUploading = false;
         }
-      });
+      },
+      (err) => {
+        console.log(err);
+        this.loadingService.hide();
+        this.toast.error(err.error.message);
+      }
+    );
   }
 
   downloadCSV() {
     try {
       this.loadingService.show('Downloading...');
-      this.carService.downloadCsv().subscribe((response: Blob) => {
-        const url = window.URL.createObjectURL(response);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'cars.csv';
-        link.click();
-        window.URL.revokeObjectURL(url);
-        this.loadingService.hide();
-        // alert('Download successfull.');
-      });
+      this.carService.downloadCsv().subscribe(
+        (response: Blob) => {
+          const url = window.URL.createObjectURL(response);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'cars.csv';
+          link.click();
+          window.URL.revokeObjectURL(url);
+          this.loadingService.hide();
+          // alert('Download successfull.');
+        },
+        (err) => {
+          console.log(err);
+          this.loadingService.hide();
+          this.toast.error(err.error.message);
+        }
+      );
     } catch (er) {
       alert('Something went wrong. Please try again later.');
       console.error(er);
