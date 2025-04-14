@@ -11,7 +11,7 @@ export class CarService {
   constructor(private http: HttpClient) {}
   apiUrl: string = environments.apiUrl;
   addCar(car: Car): Observable<any> {
-    return this.http.post(`${this.apiUrl}/car`, car);
+    return this.http.post(`${this.apiUrl}/cars`, car);
   }
   getCarList(params: any): Observable<any> {
     let httpParams = new HttpParams();
@@ -24,18 +24,24 @@ export class CarService {
     });
 
     // Make the GET request with the query parameters
-    return this.http.get(`${this.apiUrl}/car`, { params: httpParams });
+    return this.http.get(`${this.apiUrl}/cars`, { params: httpParams });
   }
   deleteCar(car: any): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/car/${car.id}`);
+    return this.http.delete(`${this.apiUrl}/cars/${car.id}`);
   }
   updateCar(car: Car): Observable<any> {
-    return this.http.put(`${this.apiUrl}/car/${car.id}`, car);
+    return this.http.put(`${this.apiUrl}/cars/${car.id}`, car);
   }
 
   uploadCsv(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post(`${this.apiUrl}/upload-csv`, formData);
+    return this.http.post(`${this.apiUrl}/cars/upload`, formData);
+  }
+
+  downloadCsv(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/cars/download-csv`, {
+      responseType: 'blob',
+    });
   }
 }

@@ -51,7 +51,7 @@ export class HomeComponent {
     }
   }
   onShowModal() {
-    this.modalService.showModal('sss');
+    this.modalService.showModal('show');
   }
   onCloseDialog() {
     this.modalService.hideModal();

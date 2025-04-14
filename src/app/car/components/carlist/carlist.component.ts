@@ -4,6 +4,10 @@ import { ModalService } from '../../../core/services/modal.service';
 import { Car } from '../../../shared/model/car.model';
 import { CustomResponse } from '../../../shared/model/user.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { environments } from '../../../environments/environment.prod';
+import { LoadingService } from '../../../shared/loading.service';
+import { CarFilterComponent } from '../car-filter/car-filter.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-carlist',
@@ -11,6 +15,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./carlist.component.css'],
 })
 export class CarlistComponent {
+  apiUrl = environments.apiUrl;
   cars: Car[] = [];
   searchedCarName: string = '';
   filter: any = {};
@@ -23,7 +28,9 @@ export class CarlistComponent {
   constructor(
     private carService: CarService,
     private modalService: ModalService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private loadingService: LoadingService,
+    private toast: ToastrService
   ) {
     this.addCarForm = this.fb.group({
       id: [''],
@@ -64,11 +71,13 @@ export class CarlistComponent {
       ...filter,
       carName: carName ? JSON.parse(carName) : '',
     };
+    this.loadingService.show('Loading data...');
 
     this.carService
       .getCarList(searchParams)
       .subscribe((res: CustomResponse) => {
         if (res.status == 'ok') {
+          this.loadingService.hide();
           this.cars = res.data;
         } else {
           this.cars = [];
@@ -83,14 +92,13 @@ export class CarlistComponent {
   }
 
   showDialog(): void {
-    this.modalService.showModal('sss');
+    this.modalService.showModal('show');
   }
   trackByCarId(index: number, car: Car): string {
     return car.id; // or any unique identifier
   }
 
   editCar(car: Car): void {
-    console.log('ABOUT TO PATCH', car);
     this.addCarForm.patchValue({
       id: car.id,
       name: car.name,
@@ -111,7 +119,7 @@ export class CarlistComponent {
       this.carService.deleteCar(car).subscribe((res: CustomResponse) => {
         if (res.status == 'ok') {
           this.loadCars();
-          alert('Car deleted successfull.');
+          this.toast.success('Car deleted successfull.');
         }
       });
     }
@@ -122,31 +130,33 @@ export class CarlistComponent {
   onCloseDialog() {
     this.modalService.hideModal();
   }
-
+  isLoadingForm: boolean = false;
   onSubmit(): void {
     if (!this.addCarForm.valid) {
       return;
     } else {
+      this.isLoadingForm = true;
       const newCar = this.addCarForm.value;
-      console.log(newCar);
       if (newCar.id) {
         this.carService.updateCar(newCar).subscribe((res: CustomResponse) => {
+          this.isLoadingForm = false;
           if (res.status == 'ok') {
             this.onCloseDialog();
-            alert('Data updated successfull.');
+            this.toast.success('Data updated successfull.');
             this.loadCars();
           } else {
-            alert('Data failed to save. Please try again later.');
+            this.toast.error('Data failed to save. Please try again later.');
           }
         });
       } else {
         this.carService.addCar(newCar).subscribe((res: CustomResponse) => {
+          this.isLoadingForm = false;
           if (res.status == 'ok') {
             this.onCloseDialog();
-            alert('Data saved successfull.');
+            this.toast.success('Data saved successfull.');
             this.loadCars();
           } else {
-            alert('Data failed to save. Please try again later.');
+            this.toast.error('Data failed to save. Please try again later.');
           }
         });
       }
@@ -160,7 +170,7 @@ export class CarlistComponent {
     const file = event.target.files[0] as File | null;
     if (file) {
       if (file.type !== 'text/csv') {
-        alert('Invalid file format.');
+        this.toast.error('Invalid file format.');
         this.selectedFile = null;
         this.selectedFileName = '';
         return;
@@ -176,16 +186,40 @@ export class CarlistComponent {
   onUploadCSV() {
     if (this.isUploading) return;
     this.isUploading = true;
+    this.loadingService.show('Uploading... This may take few moments');
     this.carService
       .uploadCsv(this.selectedFile)
       .subscribe((res: CustomResponse) => {
         if (res.status == 'ok') {
-          alert('Data uploaded successfull.');
+          this.loadingService.hide();
+          this.toast.success('Data uploaded successfull.');
           this.loadCars();
           this.selectedFile = null;
           this.selectedFileName = '';
           this.isUploading = false;
         }
       });
+  }
+
+  downloadCSV() {
+    try {
+      this.loadingService.show('Downloading...');
+      this.carService.downloadCsv().subscribe((response: Blob) => {
+        const url = window.URL.createObjectURL(response);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'cars.csv';
+        link.click();
+        window.URL.revokeObjectURL(url);
+        this.loadingService.hide();
+        // alert('Download successfull.');
+      });
+    } catch (er) {
+      alert('Something went wrong. Please try again later.');
+      console.error(er);
+    }
+  }
+  onSearch() {
+    this.loadCars();
   }
 }

@@ -41,4 +41,9 @@ export class CarFilterComponent {
       this.filterForm.setValue(JSON.parse(savedFilters));
     }
   }
+  onClearFilter() {
+    localStorage.clear();
+    this.filterForm.reset();
+    this.filterChanged.emit({});
+  }
 }

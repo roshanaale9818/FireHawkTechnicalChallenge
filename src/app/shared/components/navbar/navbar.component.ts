@@ -14,6 +14,7 @@ import { environments } from '../../../environments/environment.prod';
   styleUrl: './navbar.component.css',
 })
 export class NavbarComponent {
+  //  fake profile data
   user: User = {
     id: 1,
     name: 'John Connor',
@@ -27,8 +28,8 @@ export class NavbarComponent {
   onDownload() {
     try {
       this.http
-        .get(`${this.apiUrl}/download-csv`, {
-          responseType: 'blob', // Important for file downloads
+        .get(`${this.apiUrl}/cars/download-csv`, {
+          responseType: 'blob',
         })
         .subscribe((response: Blob) => {
           const url = window.URL.createObjectURL(response);
@@ -40,7 +41,8 @@ export class NavbarComponent {
           alert('Download successfull.');
         });
     } catch (er) {
-      alert('Something went wrong.');
+      alert('Something went wrong. Please try again later.');
+      console.error(er);
     }
   }
   constructor(private http: HttpClient) {}
