@@ -16,7 +16,9 @@ export class CarFilterComponent {
   @Output() filterChanged = new EventEmitter<any>();
   ngOnInit(): void {
     this.filterForm.valueChanges.subscribe((filters) => {
-      this.applyFilters();
+      if (this.filterForm.dirty) {
+        this.applyFilters();
+      }
     });
     this.loadFilters();
   }

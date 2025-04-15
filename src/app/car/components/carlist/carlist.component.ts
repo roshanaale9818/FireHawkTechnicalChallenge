@@ -258,6 +258,7 @@ export class CarlistComponent {
     }
   }
   onSearch() {
+    if (!this.searchedCarName) return;
     this.loadCars();
   }
 }

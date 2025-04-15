@@ -19,19 +19,22 @@
       <ng-container *ngIf="selectedFileName">
         {{ selectedFileName }}
         <button
-          class="btn btn-success btn-sm text-white mr-2"
+          class="btn btn-success btn-sm text-white mr-2 ml-2"
           (click)="onUploadCSV()"
         >
           {{ isUploading ? "Uploading..." : "  Upload CSV" }}
         </button>
       </ng-container>
-      <button class="btn btn-secondary text-white mr-2" (click)="downloadCSV()">
+      <button
+        class="btn btn-secondary text-white mr-2 mt-3 mt-md-0"
+        (click)="downloadCSV()"
+      >
         Download CSV
       </button>
     </div>
   </div>
   <!-- Advanced Filters -->
-  <div class="mt-2">
+  <div class="mt-3">
     <div class="col-md-4 mb-2">
       <div class="d-flex gap-2">
         <input
