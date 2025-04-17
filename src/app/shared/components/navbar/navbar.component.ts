@@ -5,6 +5,7 @@ import { User } from '../../model/user.model';
 import { CarService } from '../../../car/services/car.service';
 import { HttpClient } from '@angular/common/http';
 import { environments } from '../../../environments/environment.prod';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-navbar',
@@ -25,6 +26,8 @@ export class NavbarComponent {
     updatedAt: new Date('2024-09-01T10:00:00Z'),
   };
   apiUrl: string = environments.apiUrl;
+  constructor(private http: HttpClient, private toast: ToastrService) {}
+
   onDownload() {
     try {
       this.http
@@ -45,5 +48,7 @@ export class NavbarComponent {
       console.error(er);
     }
   }
-  constructor(private http: HttpClient) {}
+  onViewProfile() {
+    this.toast.info('This feature is not implemented yet.');
+  }
 }

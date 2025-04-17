@@ -83,7 +83,7 @@
           <ng-container *ngIf="cars && cars.length > 0">
             <tr *ngFor="let car of cars; trackBy: trackByCarId; let i = index">
               <td>{{ i + 1 }}</td>
-              <td>{{ car.name }}</td>
+              <td>{{ car.name | capitalize }}</td>
               <td>{{ car.mpg }}</td>
               <td>{{ car.cylinders }}</td>
               <td>{{ car.displacement }}</td>
