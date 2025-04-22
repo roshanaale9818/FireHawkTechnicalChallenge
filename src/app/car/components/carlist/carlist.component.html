@@ -170,6 +170,7 @@
         </ng-container>
       </tbody>
     </table>
+    <!-- custom pagination  starts here -->
     <ng-container *ngIf="!isLoading">
       <ng-container *ngIf="cars && cars.length > 0">
         <nav *ngIf="totalItems > pageSize" class="mt-3 mb-3">
@@ -207,6 +208,8 @@
         </nav>
       </ng-container>
     </ng-container>
+
+    <!-- custom pagination ends here   -->
   </div>
 </div>
 

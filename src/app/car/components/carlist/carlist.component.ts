@@ -288,8 +288,10 @@ export class CarlistComponent {
     if (!this.searchedCarName) return;
     this.loadCars();
   }
+  // creating Math property for inbuild Math object
   Math = Math;
 
+  // getter for paginated cars cloning the cars with spread op not to modify the original array
   get paginatedCars() {
     let sortedCars = [...this.cars];
 
@@ -297,7 +299,6 @@ export class CarlistComponent {
       sortedCars.sort((a, b) => {
         let aVal = a[this.sortColumn as keyof Car];
         let bVal = b[this.sortColumn as keyof Car];
-        console.log(aVal, bVal);
 
         // Convert to lowercase if string
         if (typeof aVal === 'string') aVal = aVal.toLowerCase();
@@ -310,6 +311,7 @@ export class CarlistComponent {
     }
     return sortedCars;
   }
+  // pagination logic for custom pagination section
   get paginationRange(): number[] {
     const totalPages = Math.ceil(this.totalItems / this.pageSize);
     const range: number[] = [];
@@ -352,7 +354,7 @@ export class CarlistComponent {
       this.sortDirection = 'asc'; // Default to ascending for new column
     }
 
-    // disabling the server side sorting for now, sorting the data on client side as it seems more convincing.
+    // disabling the server side sorting for now, sorting the data on client side as it seems more convincing and i do not want to pay to firestore for now.
     // this.loadCars();
   }
   setPage(p: number) {
