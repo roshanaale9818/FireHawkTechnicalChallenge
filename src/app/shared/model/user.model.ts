@@ -12,4 +12,5 @@ export interface CustomResponse {
   status: string;
   data: any;
   message: string;
+  totalItems?: number;
 }

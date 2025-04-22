@@ -1,4 +1,9 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { CarService } from '../../services/car.service';
 import { ModalService } from '../../../core/services/modal.service';
 import { Car } from '../../../shared/model/car.model';
@@ -8,6 +13,7 @@ import { environments } from '../../../environments/environment.prod';
 import { LoadingService } from '../../../shared/loading.service';
 import { CarFilterComponent } from '../car-filter/car-filter.component';
 import { ToastrService } from 'ngx-toastr';
+import { sortColumn } from '../../../shared/model/util.modal';
 
 @Component({
   selector: 'app-carlist',
@@ -24,13 +30,22 @@ export class CarlistComponent {
   cylinders: number[] = [4, 6, 8];
   modelYears: number[] = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
   origins: string[] = ['usa', 'europe', 'asia', 'japan'];
+
+  // Pagination
+  page = 1;
+  pageSize = 10;
+  totalItems = 0;
+
+  // Sorting
+  sortColumn: sortColumn = 'name';
+  sortDirection: 'asc' | 'desc' = 'asc';
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
   constructor(
     private carService: CarService,
     private modalService: ModalService,
     private fb: FormBuilder,
     private loadingService: LoadingService,
-    private toast: ToastrService
+    private toast: ToastrService // private cdr: ChangeDetectorRef
   ) {
     this.addCarForm = this.fb.group({
       id: [''],
@@ -48,6 +63,7 @@ export class CarlistComponent {
 
   ngOnInit(): void {
     this.loadCars();
+    // this.cdr.detectChanges();
   }
   addNewCar() {
     this.addCarForm.reset();
@@ -70,6 +86,9 @@ export class CarlistComponent {
     searchParams = {
       ...filter,
       carName: carName ? JSON.parse(carName) : '',
+      page: this.page,
+      // sortColumn: this.sortColumn,
+      // sortDirection: this.sortDirection,
     };
     this.loadingService.show('Loading data...');
 
@@ -78,6 +97,7 @@ export class CarlistComponent {
         if (res.status == 'ok') {
           this.loadingService.hide();
           this.cars = res.data;
+          this.totalItems = res.totalItems || 0;
         } else {
           this.cars = [];
         }
@@ -87,6 +107,7 @@ export class CarlistComponent {
       (err) => {
         console.log(err);
         this.loadingService.hide();
+        this.isLoading = false;
         this.toast.error(err.error.message);
       }
     );
@@ -137,7 +158,13 @@ export class CarlistComponent {
     }
   }
   onFilterChanged(event: any) {
+    this.resetPage();
     this.loadCars();
+  }
+  resetPage() {
+    this.page = 1; // Reset to first page on filter change
+    this.sortColumn = 'name';
+    this.sortDirection = 'asc';
   }
   onCloseDialog() {
     this.modalService.hideModal();
@@ -259,6 +286,79 @@ export class CarlistComponent {
   }
   onSearch() {
     if (!this.searchedCarName) return;
+    this.loadCars();
+  }
+  Math = Math;
+
+  get paginatedCars() {
+    let sortedCars = [...this.cars];
+
+    if (this.sortColumn) {
+      sortedCars.sort((a, b) => {
+        let aVal = a[this.sortColumn as keyof Car];
+        let bVal = b[this.sortColumn as keyof Car];
+        console.log(aVal, bVal);
+
+        // Convert to lowercase if string
+        if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+        if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+
+        if (aVal < bVal) return this.sortDirection === 'asc' ? -1 : 1;
+        if (aVal > bVal) return this.sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    return sortedCars;
+  }
+  get paginationRange(): number[] {
+    const totalPages = Math.ceil(this.totalItems / this.pageSize);
+    const range: number[] = [];
+
+    if (totalPages <= 7) {
+      // show all pages if total is small
+      for (let i = 1; i <= totalPages; i++) {
+        range.push(i);
+      }
+    } else {
+      range.push(1);
+
+      if (this.page > 4) {
+        range.push(-1); // ellipsis
+      }
+
+      const start = Math.max(2, this.page - 1);
+      const end = Math.min(totalPages - 1, this.page + 1);
+
+      for (let i = start; i <= end; i++) {
+        range.push(i);
+      }
+
+      if (this.page < totalPages - 3) {
+        range.push(-1); // ellipsis
+      }
+
+      range.push(totalPages);
+    }
+
+    return range;
+  }
+
+  sortData(column: sortColumn): void {
+    // If the same column is clicked, toggle the sort direction
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc'; // Default to ascending for new column
+    }
+
+    // disabling the server side sorting for now, sorting the data on client side as it seems more convincing.
+    // this.loadCars();
+  }
+  setPage(p: number) {
+    if (p === this.page) return;
+    if (p < 1 || p > Math.ceil(this.totalItems / this.pageSize)) return;
+    this.page = p;
     this.loadCars();
   }
 }
