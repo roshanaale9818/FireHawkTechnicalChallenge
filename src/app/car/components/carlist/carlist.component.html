@@ -90,7 +90,7 @@
               <td>{{ car.horsepower }}</td>
               <td>{{ car.weight }}</td>
               <td>{{ car.acceleration }}</td>
-              <td>{{ car.modelYear }}</td>
+              <td>{{ car.modelYear | na }}</td>
               <td>{{ car.origin | capitalize }}</td>
               <td>
                 <button
@@ -111,7 +111,7 @@
           </ng-container>
           <ng-container *ngIf="!cars || cars.length === 0">
             <tr class="alert alert-info" role="alert">
-              <td colspan="10" class="text-center">No cars found.</td>
+              <td colspan="11" class="text-center">No cars found.</td>
             </tr>
           </ng-container>
         </ng-container>
